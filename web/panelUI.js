@@ -29,43 +29,61 @@ const FAILURE_MAPS = [
   { key: 'failure_loop_2', label: 'Failure Loop 2', bits: 'generic_8' },
 ];
 
-const PANEL_IDS = {
-  'movement-control-panel': 'movement-control-button',
-  'telemetry-panel':        'telemetry-button',
-  'faults-panel':           'faults-button',
-};
+// Left-to-right order of the panels when several are open.
+const PANELS = [
+  { id: 'movement-control-panel', button: 'movement-control-button', build: () => MovementControl() },
+  { id: 'telemetry-panel',        button: 'telemetry-button',        build: () => TelemetryPanel()  },
+  { id: 'faults-panel',           button: 'faults-button',           build: () => FaultsPanel()     },
+];
 
-// Opens panel `id` (closing any other). Clicking the same nav button again closes it.
+const SIDENAV_WIDTH = 350;
+
+// Toggles panel `id`: opens it next to the other open panels, or closes it if already open.
 function _openPanel(id, html, width) {
-  const wasOpen = !!document.getElementById(id);
-  closePanels();
-  if (wasOpen) return;
+  if (document.getElementById(id)) { closePanel(id); return; }
 
-  document.getElementById(PANEL_IDS[id]).classList.add('active');
+  const idx   = PANELS.findIndex(p => p.id === id);
   const panel = document.createElement('div');
   panel.id = id;
   panel.classList.add('movement-panel');
-  if (width) panel.style.width = `${width}px`;
+  panel.style.width = `${width || 350}px`;
+  panel.style.order = idx;
   panel.innerHTML = html;
-  document.body.appendChild(panel);
-  document.getElementById('main-content').style.marginLeft = `${350 + (width || 350) + 20}px`;
+  document.getElementById('panels').appendChild(panel);
+  document.getElementById(PANELS[idx].button).classList.add('active');
+  _layoutMain();
   if (typeof refreshUI === 'function') refreshUI();
 }
 
-function closePanels() {
-  Object.keys(PANEL_IDS).forEach(pid => {
-    const p = document.getElementById(pid);
-    if (p) p.remove();
-  });
-  document.querySelectorAll('.sidenav .button').forEach(btn => btn.classList.remove('active'));
-  document.getElementById('main-content').style.marginLeft = '370px';
+function closePanel(id) {
+  const panel = document.getElementById(id);
+  if (panel) panel.remove();
+  const p = PANELS.find(x => x.id === id);
+  if (p) document.getElementById(p.button).classList.remove('active');
+  _layoutMain();
 }
 
-function _header(title) {
+// Re-create the open panels (used when the server sends limits / bit names).
+function rebuildPanels() {
+  PANELS.forEach(p => {
+    if (!document.getElementById(p.id)) return;
+    closePanel(p.id);
+    p.build();
+  });
+}
+
+// Push the log area to the right of all open panels.
+function _layoutMain() {
+  const panelsWidth = Array.from(document.getElementById('panels').children)
+    .reduce((sum, el) => sum + el.offsetWidth, 0);
+  document.getElementById('main-content').style.marginLeft = `${SIDENAV_WIDTH + panelsWidth + 20}px`;
+}
+
+function _header(title, id) {
   return `
     <div class="panel-header">
       <h1>${title}</h1>
-      <button class="panel-close-btn" onclick="closePanels()">&#x00D7;</button>
+      <button class="panel-close-btn" onclick="closePanel('${id}')">&#x00D7;</button>
     </div>`;
 }
 
@@ -79,7 +97,7 @@ function MovementControl() {
     `<i class="fa fa-arrow-${dir}"${rot ? ` style="display:inline-block;transform:rotate(${rot}deg)"` : ''}></i>`;
 
   _openPanel('movement-control-panel', `
-    ${_header('Movement Control')}
+    ${_header('Movement Control', 'movement-control-panel')}
 
     <h3 class="cal-axis-heading">Rate Mode</h3>
     <div class="target-control" title="Yaw rate, ±${lim.rate_deg_s} °/s">
@@ -178,7 +196,7 @@ function _one(label, field, extra) {
 
 function TelemetryPanel() {
   _openPanel('telemetry-panel', `
-    ${_header('Telemetry')}
+    ${_header('Telemetry', 'telemetry-panel')}
 
     <h3 class="cal-axis-heading">Angles [°]</h3>
     <table class="tel-table">
@@ -295,7 +313,7 @@ function FaultsPanel() {
   }).join('');
 
   _openPanel('faults-panel', `
-    ${_header('Faults')}
+    ${_header('Faults', 'faults-panel')}
 
     <h3 class="cal-axis-heading">Detailed status (SR)</h3>
     <table class="tel-table">
@@ -326,4 +344,5 @@ function FaultsPanel() {
 window.MovementControl = MovementControl;
 window.TelemetryPanel  = TelemetryPanel;
 window.FaultsPanel     = FaultsPanel;
-window.closePanels     = closePanels;
+window.closePanel      = closePanel;
+window.rebuildPanels   = rebuildPanels;

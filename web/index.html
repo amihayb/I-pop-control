@@ -26,6 +26,9 @@
     <img src="images/IAI-logo.svg" alt="IAI" id="iaiLogo" class="headImg">
     <span class="app-title">IAI POP Control</span>
 
+    <button id="record-btn" onclick="toggleRecord()" title="Record CSV: off (click to start)">
+      <span class="rec-dot"></span>
+    </button>
     <button id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
       <i class="fa fa-moon-o" id="theme-icon"></i>
     </button>
@@ -59,15 +62,10 @@
       <span>Age <b id="report-age">---</b></span>
     </div><br>
 
-    <!-- Recording -->
-    <div class="toggle-container" title="Record every received report to a CSV file">
-      <label class="toggle-label" for="record-toggle">Record CSV</label>
-      <label class="toggle-container">
-        <input type="checkbox" id="record-toggle" class="toggle-input">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-    <div id="record-info" class="small-muted center">—</div><br>
+    <!-- Emergency stop -->
+    <img id="emergency-stop" class="connection-stop-sign"
+         src="images/StopSign.svg" alt="EMERGENCY STOP"
+         title="EMERGENCY STOP: GIMBALS_OFF + DISABLE_ALL_MOTORS + rates 0" onclick="emergencyStop()">
 
     <!-- Gimbal configuration -->
     <div class="target-control" title="2 gimbals = fine only. 4 gimbals = fine + coarse.">
@@ -123,11 +121,6 @@
       </table>
     </div><br>
 
-    <!-- Emergency stop -->
-    <img id="emergency-stop" class="connection-stop-sign"
-         src="images/StopSign.svg" alt="EMERGENCY STOP"
-         title="EMERGENCY STOP: GIMBALS_OFF + DISABLE_ALL_MOTORS + rates 0" onclick="emergencyStop()"><br>
-
     <!-- Mini telemetry -->
     <div class="target-control">
       <table class="parameter-table">
@@ -176,6 +169,9 @@
       </a>
     </div>
   </div>
+
+  <!-- Side panels (Movement / Telemetry / Faults), shown next to each other -->
+  <div id="panels"></div>
 
   <!-- Main content area -->
   <div id="main-content" style="margin-left:370px; margin-top:60px; padding:20px;">

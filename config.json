@@ -1,8 +1,8 @@
 {
   "network": {
-    "local_ip": "192.168.2.5",
+    "local_ip": "192.168.2.1",
     "local_port": 5003,
-    "elmo_ip": "192.168.2.6",
+    "elmo_ip": "192.168.2.7",
     "elmo_port": 5003
   },
 

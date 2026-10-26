@@ -115,6 +115,7 @@ function onServerMessage(msg) {
       APP.cfg  = msg.config;
       APP.bits = msg.bits;
       buildModeButtons();
+      rebuildPanels();
       setGimbalCount(Number(localStorage.getItem('pop-gimbals')) || APP.cfg.gui.default_gimbal_count || 2);
       $('rawlog-toggle').checked = !!msg.raw_log;
       log(`Server ready. Elmo ${APP.cfg.network.elmo_ip}:${APP.cfg.network.elmo_port}, `
@@ -461,12 +462,26 @@ function refreshUI() {
   }
 }
 
+// ==================== Recording (top-nav circle) ====================
+
+let _recording = false;
+
+function _updateRecordButton(rec) {
+  _recording = !!(rec && rec.active);
+  const btn  = $('record-btn');
+  const file = rec && rec.path ? rec.path.split(/[\\/]/).pop() : null;
+  btn.classList.toggle('recording', _recording);
+  btn.title = _recording
+    ? `Recording CSV: ${file} (${rec.rows} rows) — click to stop`
+    : `Record CSV: off — click to start${file ? `\nLast file: ${file}` : ''}`;
+}
+
+function toggleRecord() {
+  sendToServer({ type: 'record', on: !_recording });
+}
+
 function onTick(msg) {
-  const rec = msg.recording;
-  if (Date.now() > _toggleHoldUntil) $('record-toggle').checked = rec.active;
-  $('record-info').textContent = rec.active
-    ? `${rec.path.split(/[\\/]/).pop()} — ${rec.rows} rows`
-    : (rec.path ? `last: ${rec.path.split(/[\\/]/).pop()}` : '—');
+  _updateRecordButton(msg.recording);
   refreshUI();
 }
 
@@ -477,11 +492,6 @@ function _holdToggles() { _toggleHoldUntil = Date.now() + 1500; }
 $('connection-toggle').onchange = function () {
   _holdToggles();
   if (!sendToServer({ type: this.checked ? 'connect' : 'disconnect' })) this.checked = false;
-};
-
-$('record-toggle').onchange = function () {
-  _holdToggles();
-  if (!sendToServer({ type: 'record', on: this.checked })) this.checked = false;
 };
 
 $('rawlog-toggle').onchange = function () {
@@ -499,6 +509,7 @@ window.setGimbalCount   = setGimbalCount;
 window.sendMotor        = sendMotor;
 window.setGimbalsMode   = setGimbalsMode;
 window.emergencyStop    = emergencyStop;
+window.toggleRecord     = toggleRecord;
 window.setRate          = setRate;
 window.stopRate         = stopRate;
 window.goToPosition     = goToPosition;
@@ -518,3 +529,5 @@ link = new PopLink({
   onClose:   () => { if (APP.serverOnline) setServerOnline(false); },
 });
 MovementControl();
+TelemetryPanel();
+FaultsPanel();
