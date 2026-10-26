@@ -6,7 +6,8 @@
     "elmo_port": 5003
   },
 
-  "send_rate_hz": 30,
+  "send_rate_hz": 100,
+  "message_counter": "per_command",
   "report_timeout_ms": 500,
 
   "web": {
@@ -41,27 +42,28 @@
       { "value": 6, "name": "DISABLE_YAW_FINE_MOTOR" },
       { "value": 7, "name": "ENABLE_YAW_FINE_MOTOR" },
       { "value": 8, "name": "DISABLE_PITCH_FINE_MOTOR" },
-      { "value": 9, "name": "ENABLE_PITCH_FINE_MOTOR" }
+      { "value": 9, "name": "ENABLE_PITCH_FINE_MOTOR" },
+      { "value": 10, "name": "INNER_GIMBALS_ONLY" }
     ],
     "gimbals_mode": [
-      { "value": 0, "name": "GIMBALS_OFF" },
+      { "value": 0, "name": "GIMBALS_OFF_MODE" },
       { "value": 1, "name": "RATE_MODE" },
-      { "value": 2, "name": "POSITION" },
-      { "value": 3, "name": "STRONG_CAGE" },
-      { "value": 4, "name": "SPARE_MODE1" },
-      { "value": 5, "name": "SPARE_MODE2" },
-      { "value": 6, "name": "SPARE_MODE3" },
-      { "value": 7, "name": "SPARE_MODE4" },
-      { "value": 8, "name": "SCAN1" },
-      { "value": 9, "name": "SCAN2" },
-      { "value": 10, "name": "SCAN3" },
-      { "value": 11, "name": "SCAN4" },
-      { "value": 12, "name": "SPARE_MODE5" },
+      { "value": 2, "name": "POSITION_MODE" },
+      { "value": 3, "name": "STRONG_CAGE_MODE" },
+      { "value": 4, "name": "NUC_CAGE_MODE" },
+      { "value": 5, "name": "GROUND_INERTIAL" },
+      { "value": 6, "name": "BIT_MODE" },
+      { "value": 7, "name": "SLAVE_MODE" },
+      { "value": 8, "name": "SCAN1_MODE" },
+      { "value": 9, "name": "SCAN2_MODE" },
+      { "value": 10, "name": "SCAN3_MODE" },
+      { "value": 11, "name": "SCAN4_MODE" },
+      { "value": 12, "name": "SLAVE_INERTIAL" },
       { "value": 13, "name": "TRACK_NORMAL" },
-      { "value": 14, "name": "SPARE_MODE6" },
-      { "value": 15, "name": "SPARE_MODE7" },
-      { "value": 16, "name": "SPARE_MODE8" },
-      { "value": 17, "name": "SPARE_MODE9" }
+      { "value": 14, "name": "TRACK_RETRACK" },
+      { "value": 15, "name": "TRACK_OFFSET" },
+      { "value": 16, "name": "TRACK_SEARCH" },
+      { "value": 17, "name": "TRACK_SEARCH_RETRACK" }
     ],
     "tracked_channel_select": [
       { "value": 0, "name": "FLIR_ZOOM" },
@@ -74,7 +76,12 @@
     "special_command": [
       { "value": 0, "name": "NONE" },
       { "value": 1, "name": "STABILIZATION_TEST" },
-      { "value": 3, "name": "RATE_SCALE_FACTOR" }
+      { "value": 2, "name": "DRIFT_CALIBRATION" },
+      { "value": 3, "name": "LOS_ZERO_CALIBRATION" },
+      { "value": 4, "name": "ENCODERS_ZERO_CALIBRATION" },
+      { "value": 5, "name": "BALANCE_TEST" },
+      { "value": 6, "name": "FRICTION_TEST" },
+      { "value": 7, "name": "ORTHOGONAL_CALIBRATION" }
     ],
     "busy": [
       { "value": 0, "name": "NOT_BUSY" },
@@ -88,8 +95,12 @@
       { "value": 0, "name": "NOT IN LIMIT" },
       { "value": 1, "name": "NEAR YAW LIMIT" },
       { "value": 2, "name": "NEAR PITCH LIMIT" },
-      { "value": 3, "name": "IN YAW LIMIT" },
-      { "value": 4, "name": "IN PITCH LIMIT" }
+      { "value": 3, "name": "NEAR YAW AND PITCH LIMIT" },
+      { "value": 4, "name": "IN YAW LIMIT" },
+      { "value": 5, "name": "IN PITCH LIMIT" },
+      { "value": 6, "name": "IN YAW AND PITCH LIMIT" },
+      { "value": 7, "name": "NEAR YAW, IN PITCH LIMIT" },
+      { "value": 8, "name": "NEAR PITCH, IN YAW LIMIT" }
     ],
     "power_drive_state": [
       { "value": 0, "name": "OK" },

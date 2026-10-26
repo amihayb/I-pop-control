@@ -35,13 +35,16 @@ class ElmoLink:
         self.cfg = cfg
         self.net = cfg["network"]
         self.period = 1.0 / float(cfg["send_rate_hz"])
+        # "per_command": counter changes only when the GUI sends a new command (like Arkolis).
+        # "per_packet":  counter changes on every packet.
+        self.counter_per_packet = cfg.get("message_counter", "per_command") == "per_packet"
         self.on_report = on_report
         self.on_event = on_event
         self.on_packet = on_packet
 
         self.transport = None
         self._task = None
-        self.counter = 0
+        self.counter = 1
         self.command = {}
         self.reset_command()
 
@@ -65,6 +68,8 @@ class ElmoLink:
         if bad:
             raise KeyError(f"unknown command field(s): {', '.join(bad)}")
         self.command.update(fields)
+        if not self.counter_per_packet:
+            self.counter = (self.counter + 1) & 0xFF
 
     # ------------------------------------------------------------ connection
 
@@ -88,7 +93,7 @@ class ElmoLink:
         sock.setblocking(False)
 
         self.transport, _ = await loop.create_datagram_endpoint(lambda: _Protocol(self), sock=sock)
-        self.counter = 0
+        self.counter = 1
         self.tx_count = self.rx_count = self.bad_count = 0
         self.last_rx_time = None
         self.reset_command()
@@ -109,7 +114,7 @@ class ElmoLink:
                 pass
             self._task = None
         # Leave the Elmo in a safe state before going quiet.
-        self.command.update(safe_fields())
+        self.update(safe_fields())
         self._send_once()
         self.transport.close()
         self.transport = None
@@ -136,7 +141,8 @@ class ElmoLink:
         except OSError as e:
             self._event(f"UDP send failed: {e}")
             return
-        self.counter = (self.counter + 1) & 0xFF
+        if self.counter_per_packet:
+            self.counter = (self.counter + 1) & 0xFF
         self.tx_count += 1
         self.on_packet("TX", data)
 

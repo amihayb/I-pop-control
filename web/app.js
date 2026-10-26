@@ -32,7 +32,7 @@ function enumValue(list, name, fallback) {
 }
 
 const MODE_RATE     = () => enumValue('gimbals_mode', 'RATE_MODE', 1);
-const MODE_POSITION = () => enumValue('gimbals_mode', 'POSITION', 2);
+const MODE_POSITION = () => enumValue('gimbals_mode', 'POSITION_MODE', 2);
 
 // ==================== Logging ====================
 
@@ -204,7 +204,7 @@ async function sendMotor(name) {
 
 // Returns true if it is OK to send `modeValue` (warns when motors are not confirmed).
 async function confirmModeChange(modeValue) {
-  if (modeValue === enumValue('gimbals_mode', 'GIMBALS_OFF', 0)) return true;
+  if (modeValue === enumValue('gimbals_mode', 'GIMBALS_OFF_MODE', 0)) return true;
   if (modeValue === commanded('gimbals_mode')) return true;
   if (motorsConfirmed()) return true;
   return confirmWarning('Motors not confirmed enabled',
