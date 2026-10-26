@@ -1,0 +1,17 @@
+# Local-only material (not for upload)
+reference/
+elmo_icd_messages.md
+
+# CSV recordings made by the app
+recordings/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors / OS
+.vscode/
+.vs/
+.cursor/
+Thumbs.db
+desktop.ini

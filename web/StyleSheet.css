@@ -1,0 +1,1109 @@
+:root {
+  --color-app-bg: #f7faff;
+  --color-panel-bg: #f7faff;
+  --color-nav-bg: #ebf0f8;
+  --color-btn-default: #f7faff;
+  --color-btn-active: #c9dbf9;
+  --color-btn-hover: #e8f4fd;
+  --color-btn-hover-deep: #b8cff7;
+  --color-btn-action: #8b9dc3;
+  --color-btn-action-hover: #6d7fa3;
+  --color-btn-danger: #c0392b;
+  --color-btn-danger-hover: #a93226;
+  --color-text-primary: #344563;
+  --color-text-active: #202124;
+  --color-text-muted: #6c757d;
+  --color-input-bg: #f9f9f9;
+  --color-border: #ccc;
+  --color-toggle-off: #ccc;
+  --color-toggle-on: #8b9dc3;
+  --color-toggle-thumb: white;
+  --color-modal-bg: white;
+  --color-table-header-bg: #f7faff;
+}
+
+[data-theme="dark"] {
+  --color-app-bg: #0e1520;
+  --color-panel-bg: #131d2e;
+  --color-nav-bg: #1a2535;
+  --color-btn-default: #1e2d44;
+  --color-btn-active: #2c4168;
+  --color-btn-hover: #354d7a;
+  --color-btn-hover-deep: #354d7a;
+  --color-btn-action: #4a6fa5;
+  --color-btn-action-hover: #3a5a8c;
+  --color-btn-danger: #e74c3c;
+  --color-btn-danger-hover: #c0392b;
+  --color-text-primary: #c8d8f0;
+  --color-text-active: #e0eeff;
+  --color-text-muted: #5c6e8a;
+  --color-input-bg: #0e1520;
+  --color-border: #1e2d44;
+  --color-toggle-off: #2a3a54;
+  --color-toggle-on: #4a6fa5;
+  --color-toggle-thumb: #0e1520;
+  --color-modal-bg: #131d2e;
+  --color-table-header-bg: #1e2d44;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+  margin-top: 0;
+  padding-top: 40px;
+  background-color: var(--color-app-bg);
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+.button {
+  background-color: var(--color-btn-default);
+  border: none;
+  color: var(--color-text-primary);
+  padding: 20px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: var(--color-btn-hover);
+}
+
+.button.active {
+  background-color: var(--color-btn-active);
+  color: var(--color-text-active);
+}
+
+/* Movement panel layout */
+.movement-panel {
+  width: 350px;
+  position: fixed;
+  top: 0;
+  left: 350px;
+  height: 100vh;
+  max-height: 100vh;
+  color: var(--color-text-primary);
+  background-color: var(--color-panel-bg);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 100px 20px 20px;
+  z-index: 5;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+  box-sizing: border-box;
+}
+
+.panel-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h1 {
+  margin: 0;
+}
+
+.panel-close-btn {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.movement-panel h2 {
+  text-align: center;
+}
+
+/* Movement panel buttons styling */
+.movement-panel a.button {
+  background-color: var(--color-btn-active);
+  color: var(--color-text-active);
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  padding: 20px;
+  margin: 10px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.movement-panel a.button:hover {
+  background-color: var(--color-btn-hover-deep);
+  color: var(--color-text-active);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-btn-active);
+  margin: 4px 0;
+}
+
+.movement-panel hr {
+  border: none;
+  border-top: 1px solid var(--color-btn-active);
+  margin: 4px 0;
+}
+
+.toggle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  margin-bottom: 0px;
+}
+
+.toggle-label {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 50px;
+  height: 25px;
+  background-color: var(--color-toggle-off);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  background-color: var(--color-toggle-thumb);
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: var(--color-toggle-on);
+}
+
+.toggle-input:checked + .toggle-slider::before {
+  transform: translateX(25px);
+}
+
+.toggle-input:disabled + .toggle-slider {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.target-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.target-control input {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  width: 60px;
+  text-align: center;
+}
+
+.target-control button {
+  padding: 8px 12px;
+  background-color: var(--color-btn-action);
+  color: var(--color-text-active);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 70px;
+}
+
+.target-control button:hover {
+  background-color: var(--color-btn-action-hover);
+}
+
+.topnav {
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: fixed;
+  background-color: var(--color-nav-bg);
+  display: flex;
+  align-items: center;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  z-index: 10;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+}
+
+.topnav a, .topnav span {
+  float: left;
+  color: var(--color-text-primary);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+#theme-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  padding: 14px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
+}
+
+#theme-toggle-btn:hover {
+  background-color: var(--color-btn-active);
+  color: var(--color-text-active);
+}
+
+#theme-icon {
+  display: block;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+#theme-toggle-btn:active #theme-icon {
+  opacity: 0.6;
+  transform: rotate(30deg);
+}
+
+.headImg {
+  padding: 6px 16px;
+  height: 36px;
+}
+
+#iaiLogo {
+  height: 32px;
+  margin: 6px 4px 6px 16px;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.topnav .app-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-right: auto;
+  cursor: default;
+}
+
+#logoTitle {
+  height: 36px;
+  margin: 0 20px 0 8px;
+  cursor: pointer;
+}
+
+.topnav #server-status {
+  margin-right: 8px;
+  padding: 3px 14px;
+  font-size: 12px;
+  cursor: default;
+}
+
+.sidenav {
+  width: 350px;
+  position: fixed;
+  z-index: 5;
+  top: 50px;
+  left: 0;
+  height: calc(100vh - 50px);
+  max-height: calc(100vh - 50px);
+  color: var(--color-text-primary);
+  background-color: var(--color-panel-bg);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 16px;
+  padding-bottom: 20px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+  border-right: 1px solid var(--color-btn-active);
+  box-sizing: border-box;
+}
+
+.sidenav a {
+  padding: 6px 6px 6px 6px;
+  text-decoration: none;
+  font-size: 25px;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.sidenav a:hover {
+  background-color: var(--color-btn-active);
+  color: var(--color-text-active);
+}
+
+.sidenav h1 {
+  text-align: center;
+}
+
+/* Parameter Table Styles */
+.parameter-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.param-header {
+  text-align: left;
+  padding: 5px;
+  border-bottom: 1px solid var(--color-border);
+  width: 120px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.axis-header {
+  text-align: center;
+  padding: 5px;
+  border-bottom: 1px solid var(--color-border);
+  width: 50px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.param-label {
+  padding: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.param-input-cell {
+  padding: 5px;
+  text-align: center;
+}
+
+.parameter-table .param-input {
+  width: 50px !important;
+  text-align: center !important;
+  padding: 8px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+}
+
+/* General input styling for theme support */
+input[type="number"],
+input[type="text"] {
+  color: var(--color-text-primary);
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+}
+
+/* Complex scenario submenu modal */
+.scenario-submenu {
+  background-color: var(--color-modal-bg);
+  color: var(--color-text-primary);
+}
+
+.scenario-submenu input {
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+/* ==================== Jog buttons ==================== */
+
+.jog-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--color-btn-active);
+  color: var(--color-text-active);
+  transition: background-color 0.15s ease;
+  padding: 0;
+}
+
+.jog-btn:hover {
+  background-color: var(--color-btn-hover-deep);
+}
+
+.jog-btn:active {
+  background-color: var(--color-btn-action);
+}
+
+.jog-small { font-size: 13px; opacity: 0.5; }
+.jog-small:hover { opacity: 1; }
+.jog-big   { font-size: 18px; }
+
+.jog-home {
+  background-color: var(--color-btn-active);
+  font-size: 32px;
+  color: #ed962d;
+}
+
+.jog-home:hover {
+  background-color: var(--color-btn-hover-deep);
+}
+
+/* ==================== Emergency Stop ==================== */
+
+.connection-stop-sign {
+  display: none;
+  height: 108px;
+  width: 108px;
+  padding: 0;
+  pointer-events: none;
+  margin: 0 auto 10px;
+}
+
+.connection-stop-sign.connected {
+  display: block;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* ==================== Calibration Panel ==================== */
+
+.cal-axis-heading {
+  margin: 10px 14px 4px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cal-param-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+}
+
+.cal-param-label {
+  width: 64px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--color-text-primary);
+}
+
+.cal-param-cur {
+  width: 68px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: monospace;
+  text-align: right;
+}
+
+.cal-param-input {
+  width: 80px;
+  padding: 5px 7px;
+  font-size: 13px;
+  font-family: monospace;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.cal-param-input:focus {
+  border-color: var(--color-btn-action);
+}
+
+/* ==================== Console Input ==================== */
+
+#console-area {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+#console-input {
+  flex: 1;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+#console-input:focus {
+  border-color: var(--color-btn-action);
+}
+
+#console-send {
+  font-size: 13px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-btn-action);
+  color: var(--color-text-active);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#console-send:hover {
+  background-color: var(--color-btn-action-hover);
+}
+
+/* ==================== Log area ==================== */
+
+#log {
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 13px;
+  min-height: 200px;
+  max-height: 60vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ==================== Scrollbars ==================== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-btn-active) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-btn-active);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-btn-hover-deep);
+}
+
+/* ==================== Pause Button ==================== */
+
+#pause-btn-wrap {
+  text-align: center;
+  margin-bottom: 20px;
+  display: none;
+}
+
+#pause-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background-color: var(--color-btn-action);
+  color: #fff;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#pause-btn:hover {
+  background-color: var(--color-btn-action-hover);
+}
+
+#pause-btn:active {
+  transform: scale(0.97);
+}
+
+#pause-btn.paused {
+  background-color: var(--color-btn-danger);
+}
+
+#pause-btn.paused:hover {
+  background-color: var(--color-btn-danger-hover);
+}
+
+/* ==================== Log Toggle Button ==================== */
+
+#log-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  padding: 14px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+#log-toggle-btn:hover {
+  background-color: var(--color-btn-active);
+  color: var(--color-text-active);
+}
+
+#log-toggle-btn.log-hidden {
+  opacity: 0.4;
+}
+
+/* ==================== Print Media ==================== */
+
+@media print {
+  #topnav,
+  #sidenav,
+  .movement-panel {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0;
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* ==================== Program Button Progress Bar ==================== */
+
+.movement-panel button.in-progress,
+.movement-panel a.button.in-progress {
+  background-color: var(--color-btn-hover-deep) !important;
+  color: #3276a0;
+  cursor: not-allowed;
+  pointer-events: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.movement-panel button.in-progress::after,
+.movement-panel a.button.in-progress::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: var(--progress, 0%);
+  background: #3276a0;
+  border-radius: 0 2px 2px 0;
+  transition: width 0.4s ease;
+}
+
+.movement-panel button.in-progress:hover,
+.movement-panel a.button.in-progress:hover {
+  background-color: var(--color-btn-hover-deep) !important;
+}
+
+[data-theme="dark"] .movement-panel button.in-progress,
+[data-theme="dark"] .movement-panel a.button.in-progress {
+  color: var(--color-btn-action);
+}
+
+[data-theme="dark"] .movement-panel button.in-progress::after,
+[data-theme="dark"] .movement-panel a.button.in-progress::after {
+  background: var(--color-btn-action);
+}
+
+/* ==================== SweetAlert2 Theme Overrides ==================== */
+
+.swal2-popup {
+  background-color: var(--color-modal-bg) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.swal2-title {
+  color: var(--color-text-primary) !important;
+}
+
+.swal2-html-container {
+  color: var(--color-text-muted) !important;
+}
+
+.swal2-confirm {
+  background-color: var(--color-btn-action) !important;
+  color: #fff !important;
+}
+
+.swal2-confirm:hover {
+  background-color: var(--color-btn-action-hover) !important;
+}
+
+.swal2-cancel {
+  background-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .swal2-cancel {
+  background-color: var(--color-btn-active) !important;
+  color: var(--color-text-active) !important;
+}
+
+.swal2-icon {
+  border-color: var(--color-btn-action) !important;
+  color: var(--color-btn-action) !important;
+}
+
+/* ==================== Dark-mode glow effects ==================== */
+
+[data-theme="dark"] .target-control button,
+[data-theme="dark"] #console-send {
+  color: #e0eeff;
+  box-shadow: 0 0 10px 2px rgba(74, 111, 165, 0.45);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+[data-theme="dark"] .target-control button:hover,
+[data-theme="dark"] #console-send:hover {
+  box-shadow: 0 0 18px 4px rgba(74, 111, 165, 0.6);
+  transform: translateY(-3px);
+}
+
+[data-theme="dark"] .target-control button:active,
+[data-theme="dark"] #console-send:active {
+  transform: translateY(0px);
+  box-shadow: 0 0 8px 2px rgba(74, 111, 165, 0.35);
+}
+
+[data-theme="dark"] #pause-btn:not(.paused) {
+  color: #e0eeff;
+  box-shadow: 0 0 14px 3px rgba(74, 111, 165, 0.5);
+  transition: background-color 0.2s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+[data-theme="dark"] #pause-btn:not(.paused):hover {
+  box-shadow: 0 0 22px 5px rgba(74, 111, 165, 0.6);
+  transform: translateY(-3px);
+}
+
+[data-theme="dark"] #pause-btn:not(.paused):active {
+  transform: translateY(0px);
+}
+
+[data-theme="dark"] .swal2-confirm {
+  color: #e0eeff !important;
+  box-shadow: 0 0 10px 2px rgba(74, 111, 165, 0.4) !important;
+}
+
+[data-theme="dark"] .button,
+[data-theme="dark"] .movement-panel a.button {
+  transition: background-color 0.2s ease, transform 0.12s ease;
+}
+
+[data-theme="dark"] .button:hover,
+[data-theme="dark"] .movement-panel a.button:hover {
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .button:active,
+[data-theme="dark"] .movement-panel a.button:active {
+  transform: translateY(0px);
+}
+
+[data-theme="dark"] .toggle-slider {
+  border: 1px solid rgba(74, 111, 165, 0.4);
+}
+
+[data-theme="dark"] .toggle-input:checked + .toggle-slider {
+  border-color: rgba(74, 111, 165, 0.5);
+  box-shadow: 0 0 8px 2px rgba(74, 111, 165, 0.4);
+}
+
+[data-theme="dark"] .jog-btn:active {
+  box-shadow: 0 0 8px 2px rgba(74, 111, 165, 0.4);
+}
+
+[data-theme="dark"] .cal-param-input:focus {
+  box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+}
+
+[data-theme="dark"] #console-input:focus {
+  box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+}
+
+/* ==================== Mode buttons ==================== */
+
+.mode-btn {
+  flex: 1;
+  padding: 5px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-btn-default);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  min-width: 54px;
+}
+
+.mode-btn:hover:not(:disabled) {
+  background: var(--color-btn-hover-deep);
+}
+
+.mode-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mode-btn.active-mode {
+  background: var(--color-btn-action);
+  color: #fff;
+  border-color: var(--color-btn-action);
+  box-shadow: 0 0 6px rgba(74, 111, 165, 0.4);
+}
+
+/* ==================== Status badge ==================== */
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--color-btn-default);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.status-badge.ok {
+  background: var(--color-btn-action);
+  color: #fff;
+  border-color: var(--color-btn-action);
+}
+
+.status-badge.err {
+  background: var(--color-btn-danger);
+  color: #fff;
+  border-color: var(--color-btn-danger);
+}
+
+/* ==================== Status flags ==================== */
+
+.status-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.status-flag .status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.status-flag.ok   .status-dot { background: var(--color-toggle-on);   }
+.status-flag.err  .status-dot { background: var(--color-btn-danger);  }
+.status-flag.unknown .status-dot { background: var(--color-text-muted); }
+
+/* ==================== Telemetry table ==================== */
+
+.tel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.tel-table th {
+  background: var(--color-table-header-bg);
+  padding: 4px 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.tel-table td {
+  padding: 3px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  font-variant-numeric: tabular-nums;
+}
+
+.tel-table td:first-child {
+  text-align: left;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+/* ==================== param-value (replaces param-input readonly) ==================== */
+
+.param-value {
+  display: block;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--color-text-primary);
+}
+
+/* ==================== Disabled program button ==================== */
+
+.btn-disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+/* ==================== IAI POP Control additions ==================== */
+
+/* 2-gimbal mode hides everything that belongs to the coarse motors */
+body.gimbals-2 .coarse-only {
+  display: none;
+}
+
+.small-muted {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: normal;
+}
+
+.center {
+  text-align: center;
+}
+
+.link-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 15px 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.section-box {
+  padding: 0 15px;
+}
+
+.section-box .toggle-label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.motor-table td {
+  padding: 2px 4px;
+}
+
+.motor-table .mode-btn {
+  min-width: 44px;
+  width: 100%;
+}
+
+.section-box .tel-table {
+  margin-bottom: 6px;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.mode-grid .mode-btn {
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#overall-status {
+  max-width: 300px;
+  white-space: normal;
+  text-align: center;
+}
+
+.cell-err {
+  color: var(--color-btn-danger);
+  font-weight: 700;
+}
+
+.fault-table td:first-child {
+  white-space: nowrap;
+}
+
+.fault-table td {
+  padding: 1px 4px;
+  font-size: 11px;
+}
+
+.bit-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 8px;
+  padding: 0 14px;
+  font-size: 11px;
+}
+
+.bit-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#log-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+#log-controls .toggle-container {
+  padding: 0;
+}
+
+#log-clear {
+  font-size: 13px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-btn-action);
+  color: var(--color-text-active);
+  cursor: pointer;
+}
+
+#log-clear:hover {
+  background-color: var(--color-btn-action-hover);
+}

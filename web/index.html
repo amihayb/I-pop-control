@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IAI POP Control</title>
+
+  <link href="static/StyleSheet.css" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/font-awesome.min.css">
+  <link rel="icon" type="image/svg+xml" href="images/IAI-logo.svg">
+
+  <script src="vendor/sweetalert2@11.js"></script>
+
+  <!-- Apply saved theme before render to avoid flash -->
+  <script>
+    (function () {
+      var theme = localStorage.getItem('pop-theme') || 'dark';
+      if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Top navigation bar -->
+  <div class="topnav" id="topnav">
+    <img src="images/IAI-logo.svg" alt="IAI" id="iaiLogo" class="headImg">
+    <span class="app-title">IAI POP Control</span>
+
+    <button id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
+      <i class="fa fa-moon-o" id="theme-icon"></i>
+    </button>
+    <button id="log-toggle-btn" onclick="toggleLog()" title="Show / hide log">
+      <i class="fa fa-terminal"></i>
+    </button>
+    <a onclick="about()" title="About"><i class="fa fa-info-circle"></i></a>
+    <span id="server-status" class="status-badge err" title="Connection between this page and the Python program">SERVER OFFLINE</span>
+    <img src="images/logo-title.svg" alt="Logo" id="logoTitle" height="36"
+         title="About" onclick="about()">
+  </div>
+
+  <!-- Left sidebar -->
+  <div class="sidenav" id="sidenav">
+    <h1>Gimbal Control</h1>
+
+    <!-- Connection toggle -->
+    <div class="toggle-container" title="Start / stop sending commands to the Elmo">
+      <label class="toggle-label" for="connection-toggle">Connection</label>
+      <label class="toggle-container">
+        <input type="checkbox" id="connection-toggle" class="toggle-input">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="link-info">
+      <span id="report-status" class="status-badge">NO LINK</span>
+      <span>TX <b id="tx-count">0</b></span>
+      <span>RX <b id="rx-count">0</b></span>
+      <span>Bad <b id="bad-count">0</b></span>
+      <span>Age <b id="report-age">---</b></span>
+    </div><br>
+
+    <!-- Recording -->
+    <div class="toggle-container" title="Record every received report to a CSV file">
+      <label class="toggle-label" for="record-toggle">Record CSV</label>
+      <label class="toggle-container">
+        <input type="checkbox" id="record-toggle" class="toggle-input">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div id="record-info" class="small-muted center">—</div><br>
+
+    <!-- Gimbal configuration -->
+    <div class="target-control" title="2 gimbals = fine only. 4 gimbals = fine + coarse.">
+      <label class="toggle-label">Gimbals</label>
+      <div style="display:flex; gap:4px;">
+        <button id="btn-gimbals-2" class="mode-btn" onclick="setGimbalCount(2)">2 (fine)</button>
+        <button id="btn-gimbals-4" class="mode-btn" onclick="setGimbalCount(4)">4 (+ coarse)</button>
+      </div>
+    </div><br>
+
+    <!-- Motors -->
+    <div class="section-box">
+      <label class="toggle-label">Motors</label>
+      <div class="btn-row">
+        <button class="mode-btn conn-only" onclick="sendMotor('ENABLE_ALL_MOTORS')">Enable All</button>
+        <button class="mode-btn conn-only" onclick="sendMotor('DISABLE_ALL_MOTORS')">Disable All</button>
+      </div>
+      <table class="tel-table motor-table">
+        <tbody>
+          <tr><td>Yaw fine</td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_YAW_FINE_MOTOR')">On</button></td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_YAW_FINE_MOTOR')">Off</button></td></tr>
+          <tr><td>Pitch fine</td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_PITCH_FINE_MOTOR')">On</button></td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_PITCH_FINE_MOTOR')">Off</button></td></tr>
+          <tr class="coarse-only"><td>Yaw coarse</td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_YAW_COARSE_MOTOR')">On</button></td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_YAW_COARSE_MOTOR')">Off</button></td></tr>
+          <tr class="coarse-only"><td>Pitch coarse</td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_PITCH_COARSE_MOTOR')">On</button></td>
+            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_PITCH_COARSE_MOTOR')">Off</button></td></tr>
+        </tbody>
+      </table>
+      <table class="tel-table">
+        <tbody>
+          <tr><td>Sent</td><td id="motor-cmd">---</td></tr>
+          <tr><td>Reported</td><td id="motor-rpt">---</td></tr>
+          <tr><td>MotorSF_DEBUG</td><td id="motor-sf">---</td></tr>
+        </tbody>
+      </table>
+      <div class="center"><span id="motor-handshake" class="status-badge">MOTORS: ---</span></div>
+    </div><br>
+
+    <!-- Gimbals mode -->
+    <div class="section-box">
+      <label class="toggle-label">Gimbals Mode</label>
+      <div id="mode-buttons" class="mode-grid"></div>
+      <table class="tel-table">
+        <tbody>
+          <tr><td>Sent</td><td id="mode-cmd">---</td></tr>
+          <tr><td>Reported</td><td id="mode-rpt">---</td></tr>
+        </tbody>
+      </table>
+    </div><br>
+
+    <!-- Emergency stop -->
+    <img id="emergency-stop" class="connection-stop-sign"
+         src="images/StopSign.svg" alt="EMERGENCY STOP"
+         title="EMERGENCY STOP: GIMBALS_OFF + DISABLE_ALL_MOTORS + rates 0" onclick="emergencyStop()"><br>
+
+    <!-- Mini telemetry -->
+    <div class="target-control">
+      <table class="parameter-table">
+        <thead>
+          <tr>
+            <th class="param-header">Parameter</th>
+            <th class="axis-header">Yaw</th>
+            <th class="axis-header">Pitch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="param-label">LOS angle [°]</td>
+            <td class="param-input-cell"><span class="param-value" data-f="yaw_los_angle" data-d="2">---</span></td>
+            <td class="param-input-cell"><span class="param-value" data-f="pitch_los_angle" data-d="2">---</span></td>
+          </tr>
+          <tr>
+            <td class="param-label">Rate [°/s]</td>
+            <td class="param-input-cell"><span class="param-value" data-f="yaw_rate" data-d="2">---</span></td>
+            <td class="param-input-cell"><span class="param-value" data-f="pitch_rate" data-d="2">---</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div><br>
+
+    <!-- Overall health -->
+    <div class="target-control" style="justify-content:center;">
+      <span id="overall-status" class="status-badge">—</span>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Navigation -->
+    <div>
+      <a href="#" class="button" id="movement-control-button"
+         title="Rate / position commands and jog" onclick="MovementControl(); return false;">
+        Movement Control
+      </a>
+      <a href="#" class="button" id="telemetry-button"
+         title="All report values" onclick="TelemetryPanel(); return false;">
+        Telemetry
+      </a>
+      <a href="#" class="button" id="faults-button"
+         title="Decoded status, fault and failure bit maps" onclick="FaultsPanel(); return false;">
+        Faults
+      </a>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div id="main-content" style="margin-left:370px; margin-top:60px; padding:20px;">
+    <div id="log-section">
+      <h2>Log</h2>
+      <div id="log-controls">
+        <label class="toggle-container" title="Show raw hex of sent / received packets (every N-th packet, see config.json)">
+          <span class="toggle-label" style="font-size:13px; margin-right:8px;">Raw packets</span>
+          <input type="checkbox" id="rawlog-toggle" class="toggle-input">
+          <span class="toggle-slider"></span>
+        </label>
+        <button id="log-clear" onclick="clearLog()">Clear</button>
+      </div>
+      <pre id="log"></pre>
+    </div>
+  </div>
+
+  <script src="static/popLink.js"></script>
+  <script src="static/panelUI.js"></script>
+  <script src="static/app.js"></script>
+</body>
+</html>

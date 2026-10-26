@@ -1,0 +1,150 @@
+{
+  "network": {
+    "local_ip": "192.168.2.5",
+    "local_port": 5003,
+    "elmo_ip": "192.168.2.6",
+    "elmo_port": 5003
+  },
+
+  "send_rate_hz": 30,
+  "report_timeout_ms": 500,
+
+  "web": {
+    "host": "127.0.0.1",
+    "port": 8080
+  },
+
+  "gui": {
+    "default_gimbal_count": 2,
+    "ui_update_hz": 10,
+    "raw_log_every_n": 30
+  },
+
+  "limits": {
+    "rate_deg_s": 200,
+    "yaw_min_deg": 0,
+    "yaw_max_deg": 360,
+    "pitch_min_deg": -180,
+    "pitch_max_deg": 180
+  },
+
+  "recordings_folder": "recordings",
+
+  "enums": {
+    "enable_disable_motor": [
+      { "value": 0, "name": "DISABLE_ALL_MOTORS" },
+      { "value": 1, "name": "ENABLE_ALL_MOTORS" },
+      { "value": 2, "name": "DISABLE_YAW_COARSE_MOTOR" },
+      { "value": 3, "name": "ENABLE_YAW_COARSE_MOTOR" },
+      { "value": 4, "name": "DISABLE_PITCH_COARSE_MOTOR" },
+      { "value": 5, "name": "ENABLE_PITCH_COARSE_MOTOR" },
+      { "value": 6, "name": "DISABLE_YAW_FINE_MOTOR" },
+      { "value": 7, "name": "ENABLE_YAW_FINE_MOTOR" },
+      { "value": 8, "name": "DISABLE_PITCH_FINE_MOTOR" },
+      { "value": 9, "name": "ENABLE_PITCH_FINE_MOTOR" }
+    ],
+    "gimbals_mode": [
+      { "value": 0, "name": "GIMBALS_OFF" },
+      { "value": 1, "name": "RATE_MODE" },
+      { "value": 2, "name": "POSITION" },
+      { "value": 3, "name": "STRONG_CAGE" },
+      { "value": 4, "name": "SPARE_MODE1" },
+      { "value": 5, "name": "SPARE_MODE2" },
+      { "value": 6, "name": "SPARE_MODE3" },
+      { "value": 7, "name": "SPARE_MODE4" },
+      { "value": 8, "name": "SCAN1" },
+      { "value": 9, "name": "SCAN2" },
+      { "value": 10, "name": "SCAN3" },
+      { "value": 11, "name": "SCAN4" },
+      { "value": 12, "name": "SPARE_MODE5" },
+      { "value": 13, "name": "TRACK_NORMAL" },
+      { "value": 14, "name": "SPARE_MODE6" },
+      { "value": 15, "name": "SPARE_MODE7" },
+      { "value": 16, "name": "SPARE_MODE8" },
+      { "value": 17, "name": "SPARE_MODE9" }
+    ],
+    "tracked_channel_select": [
+      { "value": 0, "name": "FLIR_ZOOM" },
+      { "value": 1, "name": "ZLA" },
+      { "value": 2, "name": "DAY_SPOTTER" },
+      { "value": 3, "name": "SWIR" },
+      { "value": 4, "name": "MWIR" },
+      { "value": 5, "name": "VIS" }
+    ],
+    "special_command": [
+      { "value": 0, "name": "NONE" },
+      { "value": 1, "name": "STABILIZATION_TEST" },
+      { "value": 3, "name": "RATE_SCALE_FACTOR" }
+    ],
+    "busy": [
+      { "value": 0, "name": "NOT_BUSY" },
+      { "value": 1, "name": "FINE_CALIBRATION_BUSY" },
+      { "value": 2, "name": "COARSE_CALIBRATION_BUSY" },
+      { "value": 3, "name": "BIT_BUSY" },
+      { "value": 4, "name": "BUSY_SPARE1" },
+      { "value": 5, "name": "BUSY_SPARE2" }
+    ],
+    "angle_limit": [
+      { "value": 0, "name": "NOT IN LIMIT" },
+      { "value": 1, "name": "NEAR YAW LIMIT" },
+      { "value": 2, "name": "NEAR PITCH LIMIT" },
+      { "value": 3, "name": "IN YAW LIMIT" },
+      { "value": 4, "name": "IN PITCH LIMIT" }
+    ],
+    "power_drive_state": [
+      { "value": 0, "name": "OK" },
+      { "value": 3, "name": "Under voltage" },
+      { "value": 5, "name": "Over voltage" },
+      { "value": 7, "name": "Safety state" },
+      { "value": 11, "name": "Short protection" },
+      { "value": 13, "name": "Over temperature" }
+    ]
+  },
+
+  "command_defaults": {
+    "tracked_channel_select": 0,
+    "special_command": 0,
+    "yaw_angle_pointing": 0.0,
+    "pitch_angle_pointing": 0.0,
+    "track_error_time_tag": 0,
+    "yaw_track_error": 0.0,
+    "pitch_track_error": 0.0,
+    "yaw_rate_grr": 0.0,
+    "pitch_rate_grr": 0.0,
+    "tracked_sensor_fov": 0.0,
+    "cancel_protect_yaw": 0,
+    "spare_uint8_62": 0,
+    "reset_counter_1pps": 0,
+    "cancel_protect_pi": 0,
+    "drift_yaw": 0.0,
+    "drift_pitch": 0.0,
+    "yaw_rate_sf": 0.0,
+    "pitch_rate_sf": 0.0,
+    "cancelled_yaw_protections": 0,
+    "cancelled_pi_protections": 0,
+    "track_enable_recording": 0,
+    "spare_uint8_90": 0,
+    "ir_integration_time": 0.0,
+    "vis_integration_time": 0.0,
+    "yaw_los_zero_offset": 0.0,
+    "pitch_los_zero_offset": 0.0,
+    "bias_gyro_x": 0.0,
+    "bias_gyro_y": 0.0,
+    "bias_gyro_z": 0.0,
+    "track_amp_recording": 0.0,
+    "track_min_time_recording": 0.0,
+    "track_min_periods_recording": 0.0,
+    "spare_float_1": 0.0,
+    "spare_float_2": 0.0,
+    "spare_float_3": 0.0,
+    "spare_float_4": 0.0,
+    "spare_float_5": 0.0,
+    "spare_float_6": 0.0,
+    "spare_float_7": 0.0,
+    "spare_float_8": 0.0,
+    "spare_float_9": 0.0,
+    "spare_float_10": 0.0,
+    "spare_float_11": 0.0,
+    "spare_float_12": 0.0
+  }
+}
