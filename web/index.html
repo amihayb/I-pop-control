@@ -86,17 +86,25 @@
       <table class="tel-table motor-table">
         <tbody>
           <tr><td>Yaw fine</td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_YAW_FINE_MOTOR')">On</button></td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_YAW_FINE_MOTOR')">Off</button></td></tr>
+            <td><label class="motor-toggle" title="Yaw fine. The switch is green when this motor's servo is on.">
+              <input type="checkbox" id="motor-yaw-fine" class="toggle-input conn-only" disabled>
+              <span class="toggle-slider"></span>
+            </label></td></tr>
           <tr><td>Pitch fine</td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_PITCH_FINE_MOTOR')">On</button></td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_PITCH_FINE_MOTOR')">Off</button></td></tr>
+            <td><label class="motor-toggle" title="Pitch fine. The switch is green when this motor's servo is on.">
+              <input type="checkbox" id="motor-pitch-fine" class="toggle-input conn-only" disabled>
+              <span class="toggle-slider"></span>
+            </label></td></tr>
           <tr class="coarse-only"><td>Yaw coarse</td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_YAW_COARSE_MOTOR')">On</button></td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_YAW_COARSE_MOTOR')">Off</button></td></tr>
+            <td><label class="motor-toggle" title="Yaw coarse. The switch is green when this motor's servo is on.">
+              <input type="checkbox" id="motor-yaw-coarse" class="toggle-input conn-only" disabled>
+              <span class="toggle-slider"></span>
+            </label></td></tr>
           <tr class="coarse-only"><td>Pitch coarse</td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('ENABLE_PITCH_COARSE_MOTOR')">On</button></td>
-            <td><button class="mode-btn conn-only" onclick="sendMotor('DISABLE_PITCH_COARSE_MOTOR')">Off</button></td></tr>
+            <td><label class="motor-toggle" title="Pitch coarse. The switch is green when this motor's servo is on.">
+              <input type="checkbox" id="motor-pitch-coarse" class="toggle-input conn-only" disabled>
+              <span class="toggle-slider"></span>
+            </label></td></tr>
         </tbody>
       </table>
       <table class="tel-table">

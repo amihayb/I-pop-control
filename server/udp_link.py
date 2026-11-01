@@ -52,6 +52,11 @@ class ElmoLink:
         self.rx_count = 0
         self.bad_count = 0
         self.last_rx_time = None
+        self.motors_on = set()
+        self._motor_names = {
+            int(item["value"]): item["name"]
+            for item in cfg.get("enums", {}).get("enable_disable_motor", [])
+        }
 
     # ------------------------------------------------------------ command state
 
@@ -61,6 +66,7 @@ class ElmoLink:
         cmd.update(self.cfg.get("command_defaults", {}))
         cmd.update(safe_fields())
         self.command = cmd
+        self.motors_on = set()
 
     def update(self, fields):
         """Merge GUI changes into the command. Unknown and header fields are rejected."""
@@ -68,8 +74,49 @@ class ElmoLink:
         if bad:
             raise KeyError(f"unknown command field(s): {', '.join(bad)}")
         self.command.update(fields)
+        if "enable_disable_motor" in fields:
+            self._note_motor_command(fields["enable_disable_motor"])
         if not self.counter_per_packet:
             self.counter = (self.counter + 1) & 0xFF
+
+    def _note_motor_command(self, value):
+        """Remember which motors the last enable/disable commands left on."""
+        name = self._motor_names.get(int(value), "")
+        if name == "DISABLE_ALL_MOTORS":
+            self.motors_on.clear()
+        elif name == "ENABLE_ALL_MOTORS":
+            self.motors_on = set(_ALL_MOTORS)
+        elif name == "INNER_GIMBALS_ONLY":
+            self.motors_on = {"yaw_fine", "pitch_fine"}
+        elif name.startswith("ENABLE_"):
+            key = _motor_key(name)
+            if key:
+                self.motors_on.add(key)
+        elif name.startswith("DISABLE_"):
+            key = _motor_key(name)
+            if key:
+                self.motors_on.discard(key)
+
+    def _gimbals_off_reason(self):
+        """Why the gimbal mode must be OFF, or None if a mode is allowed."""
+        timeout_s = int(self.cfg.get("report_timeout_ms", 500)) / 1000.0
+        if self.last_rx_time is None:
+            return "start"
+        if (time.monotonic() - self.last_rx_time) > timeout_s:
+            return "communication loss"
+        if not self.motors_on:
+            return "all motors off"
+        return None
+
+    def _enforce_gimbals_off(self):
+        """Put the mode back to OFF on start, after a lost report, or with every motor off."""
+        reason = self._gimbals_off_reason()
+        if reason is None or int(self.command.get("gimbals_mode", 0)) == 0:
+            return
+        self.command["gimbals_mode"] = 0
+        if not self.counter_per_packet:
+            self.counter = (self.counter + 1) & 0xFF
+        self._event(f"Gimbals mode set to OFF ({reason})")
 
     # ------------------------------------------------------------ connection
 
@@ -102,6 +149,7 @@ class ElmoLink:
             f"UDP open {self.net['local_ip']}:{self.net['local_port']} -> "
             f"{self.net['elmo_ip']}:{self.net['elmo_port']} at {self.cfg['send_rate_hz']} Hz"
         )
+        self._event("Gimbals mode set to OFF (start)")
 
     async def stop(self):
         if not self.running:
@@ -135,6 +183,7 @@ class ElmoLink:
             await asyncio.sleep(max(0.0, delay))
 
     def _send_once(self):
+        self._enforce_gimbals_off()
         data = icd.build_command(self.command, self.counter, time_stamp=0)
         try:
             self.transport.sendto(data, (self.net["elmo_ip"], int(self.net["elmo_port"])))
@@ -184,6 +233,23 @@ class ElmoLink:
                 "pitch_angle_position": self.command["pitch_angle_position"],
             },
         }
+
+
+_ALL_MOTORS = {"yaw_fine", "pitch_fine", "yaw_coarse", "pitch_coarse"}
+
+
+def _motor_key(name):
+    """ENABLE_YAW_FINE_MOTOR -> yaw_fine. Returns None for ALL / unknown names."""
+    if name.startswith("ENABLE_"):
+        body = name[len("ENABLE_"):]
+    elif name.startswith("DISABLE_"):
+        body = name[len("DISABLE_"):]
+    else:
+        return None
+    if body.endswith("_MOTOR"):
+        body = body[: -len("_MOTOR")]
+    key = body.lower()
+    return key if key in _ALL_MOTORS else None
 
 
 def safe_fields():

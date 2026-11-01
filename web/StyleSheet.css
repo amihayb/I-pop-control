@@ -1066,12 +1066,31 @@ body.gimbals-2 .coarse-only {
 }
 
 .motor-table td {
-  padding: 2px 4px;
+  padding: 4px 4px;
 }
 
-.motor-table .mode-btn {
-  min-width: 44px;
-  width: 100%;
+.motor-table td:last-child {
+  text-align: right;
+  width: 64px;
+}
+
+/* Same switch as Connection, but green while that motor's servo is on. */
+.motor-toggle {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.motor-toggle .toggle-input:checked + .toggle-slider {
+  background-color: #2ecc71;
+}
+
+[data-theme="dark"] .motor-toggle .toggle-input:checked + .toggle-slider {
+  background-color: #2ecc71;
+  border-color: #27ae60;
+  box-shadow: 0 0 8px 2px rgba(46, 204, 113, 0.45);
 }
 
 .section-box .tel-table {
@@ -1096,6 +1115,15 @@ body.gimbals-2 .coarse-only {
   max-width: 300px;
   white-space: normal;
   text-align: center;
+}
+
+.cell-ok {
+  color: #1e8e3e;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .cell-ok {
+  color: #2ecc71;
 }
 
 .cell-err {

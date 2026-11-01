@@ -190,16 +190,35 @@ async function confirmWarning(title, text) {
 }
 
 async function sendMotor(name) {
-  if (!isConnected()) { log('Not connected.'); return; }
+  if (!isConnected()) { log('Not connected.'); return false; }
   const value = enumValue('enable_disable_motor', name, null);
-  if (value === null) { log(`"${name}" is not in config.json enums.enable_disable_motor`); return; }
+  if (value === null) { log(`"${name}" is not in config.json enums.enable_disable_motor`); return false; }
 
   if (name.startsWith('ENABLE') && (!APP.report || APP.report.motor_sf_debug !== 2)) {
     const ok = await confirmWarning('Elmo not ready for enable',
       `MotorSF_DEBUG is <b>${APP.report ? APP.report.motor_sf_debug : 'unknown'}</b> (ICD: send enable only when it is 2).`);
-    if (!ok) return;
+    if (!ok) return false;
   }
-  if (sendSet({ enable_disable_motor: value })) log(`Motors → ${name}`);
+  if (sendSet({ enable_disable_motor: value })) {
+    log(`Motors → ${name}`);
+    return true;
+  }
+  return false;
+}
+
+// One switch per motor. Green (checked) follows the Elmo SR "servo enabled" bit.
+const MOTOR_SWITCHES = [
+  { id: 'motor-yaw-fine',     key: 'yaw_fine',     enable: 'ENABLE_YAW_FINE_MOTOR',     disable: 'DISABLE_YAW_FINE_MOTOR' },
+  { id: 'motor-pitch-fine',   key: 'pitch_fine',   enable: 'ENABLE_PITCH_FINE_MOTOR',   disable: 'DISABLE_PITCH_FINE_MOTOR' },
+  { id: 'motor-yaw-coarse',   key: 'yaw_coarse',   enable: 'ENABLE_YAW_COARSE_MOTOR',   disable: 'DISABLE_YAW_COARSE_MOTOR' },
+  { id: 'motor-pitch-coarse', key: 'pitch_coarse', enable: 'ENABLE_PITCH_COARSE_MOTOR', disable: 'DISABLE_PITCH_COARSE_MOTOR' },
+];
+const _switchHold = {};
+
+function motorServoOn(key) {
+  const r = APP.report;
+  if (!r || r[`${key}_sr`] === undefined || r[`${key}_sr`] === null) return false;
+  return !!_decodeSr(r[`${key}_sr`]).servo_enabled;
 }
 
 // Returns true if it is OK to send `modeValue` (warns when motors are not confirmed).
@@ -375,12 +394,19 @@ function _updateFaults(r) {
       if (!el) return;
       if (!sr) { el.textContent = '---'; el.className = m.coarse ? 'coarse-only' : ''; return; }
       const v = sr[row.key];
-      let text, bad;
-      if (row.key === 'power_state')        { text = enumName('power_drive_state', v); bad = v !== 0; }
-      else if (row.key === 'servo_enabled') { text = v ? 'Yes' : 'No'; bad = false; }
-      else                                  { text = v ? 'Yes' : 'No'; bad = !!v; }
+      let text, tone;
+      if (row.key === 'power_state') {
+        text = enumName('power_drive_state', v);
+        tone = v !== 0 ? 'cell-err' : '';
+      } else {
+        const yes = !!v;
+        text = yes ? 'Yes' : 'No';
+        // Yes is the good answer, except STO diag failed, where Yes is the fault.
+        const good = row.key === 'sto_diag_failed' ? !yes : yes;
+        tone = good ? 'cell-ok' : 'cell-err';
+      }
       el.textContent = text;
-      el.className = (m.coarse ? 'coarse-only ' : '') + (bad ? 'cell-err' : '');
+      el.className = (m.coarse ? 'coarse-only ' : '') + tone;
     });
     const mf = r ? r[`${m.key}_mf`] : null;
     for (let b = 0; b < 32; b++) _setFlag(`mf-${m.key}-${b}`, mf === null ? null : !((mf >>> b) & 1));
@@ -429,6 +455,11 @@ function refreshUI() {
   else if (enumName('enable_disable_motor', cMotor).startsWith('ENABLE'))
                                                                 _setBadge('motor-handshake', 'WAITING FOR ELMO', 'err');
   else                                                          _setBadge('motor-handshake', 'MOTORS DISABLED', '');
+  MOTOR_SWITCHES.forEach(m => {
+    const el = $(m.id);
+    if (!el || Date.now() < (_switchHold[m.id] || 0)) return;
+    el.checked = connected && !!r && motorServoOn(m.key);
+  });
 
   // Gimbals mode
   const cMode = commanded('gimbals_mode');
@@ -497,6 +528,22 @@ $('connection-toggle').onchange = function () {
 $('rawlog-toggle').onchange = function () {
   sendToServer({ type: 'rawlog', on: this.checked });
 };
+
+MOTOR_SWITCHES.forEach(m => {
+  const el = $(m.id);
+  if (!el) return;
+  el.onchange = async function () {
+    _switchHold[m.id] = Date.now() + 10000;
+    const wantOn = this.checked;
+    const sent = await sendMotor(wantOn ? m.enable : m.disable);
+    if (!sent) {
+      this.checked = isConnected() && motorServoOn(m.key);
+      _switchHold[m.id] = 0;
+    } else {
+      _switchHold[m.id] = Date.now() + 1500;
+    }
+  };
+});
 
 // ==================== Expose globals ====================
 
